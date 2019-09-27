@@ -1,0 +1,99 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SmartLoggerMonitorApp.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="serialComName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">COM1</Value>
+    </Setting>
+    <Setting Name="serialSpeedRate" Type="System.String" Scope="User">
+      <Value Profile="(Default)">9600</Value>
+    </Setting>
+    <Setting Name="serialParity" Type="System.String" Scope="User">
+      <Value Profile="(Default)">none</Value>
+    </Setting>
+    <Setting Name="serialDataBits" Type="System.String" Scope="User">
+      <Value Profile="(Default)">8 bits</Value>
+    </Setting>
+    <Setting Name="serialStopBits" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1 bits</Value>
+    </Setting>
+    <Setting Name="serialFlow" Type="System.String" Scope="User">
+      <Value Profile="(Default)">none</Value>
+    </Setting>
+    <Setting Name="serialEncode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">UTF-8</Value>
+    </Setting>
+    <Setting Name="serialEnterCode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\r\n</Value>
+    </Setting>
+    <Setting Name="dataAryColName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">時間,経過時間,電圧[V],バッテリ電流[A],ソーラー電流[A],モータ電流[A],バッテリ電力[W],ソーラー電力[W],モータ電力[W],バッテリ積算電力[Wh],ソーラー積算電力[Wh],モータ積算電力[Wh],速度[km/h],モータ温度[℃],残量[Wh],合計[V],最小[V],最大[V],距離[km],GPS速度[km/h],MPPT1-1,MPPT1-2,MPPT1-3,MPPT1-4,MPPT1-5,MPPT2-1,MPPT2-2,MPPT2-3,MPPT2-4,MPPT2-5,MPPT2-6,T1,T2,T3,T4,T5,T6,T7,T8,T9,T10,T11,T12,T13,T14,T15,T16</Value>
+    </Setting>
+    <Setting Name="dataAryColShow" Type="System.String" Scope="User">
+      <Value Profile="(Default)">False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False</Value>
+    </Setting>
+    <Setting Name="serialDataNum" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
+    <Setting Name="chartSettings_x" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="chartSettings_y" Type="System.String" Scope="User">
+      <Value Profile="(Default)">12</Value>
+    </Setting>
+    <Setting Name="chartSettings_y2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">2,14</Value>
+    </Setting>
+    <Setting Name="xmin" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-21600</Value>
+    </Setting>
+    <Setting Name="xmax" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">21600</Value>
+    </Setting>
+    <Setting Name="ymin" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="ymax" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">6000</Value>
+    </Setting>
+    <Setting Name="y2min" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="y2max" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">150</Value>
+    </Setting>
+    <Setting Name="solarPowerNum" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">7</Value>
+    </Setting>
+    <Setting Name="solarPowerWhNum" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="motorPowerWhNum" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">11</Value>
+    </Setting>
+    <Setting Name="speedNum" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">12</Value>
+    </Setting>
+    <Setting Name="motorPowerNum" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">8</Value>
+    </Setting>
+    <Setting Name="serialCountNum" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="carWeight" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">250</Value>
+    </Setting>
+    <Setting Name="motorEff" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">90</Value>
+    </Setting>
+    <Setting Name="xThickness" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3600</Value>
+    </Setting>
+    <Setting Name="yThickness" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
+    <Setting Name="y2Thickness" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

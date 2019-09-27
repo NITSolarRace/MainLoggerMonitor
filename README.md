@@ -1,0 +1,2 @@
+# MainLoggerMonitor
+メインロガーのシリアル通信モニタです

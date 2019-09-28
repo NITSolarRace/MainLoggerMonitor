@@ -188,13 +188,13 @@ namespace SmartLoggerMonitorApp
                                 mainChart.Series[global_mainChartLegend[i]].Points.AddXY(x2, y2);
                             }
                         }
-                    }
 
-                    // solarChart表示
-                    int solarChart_y = Properties.Settings.Default.solarPowerNum;  // ソーラー電力
-                    if (double.TryParse(serialDataAry[mainChart_x], out double xSolar) && double.TryParse(serialDataAry[solarChart_y], out double ySolar))
-                    {
-                        subChart.Series[global_subChartLegend].Points.AddXY(xSolar, ySolar);
+                        // solarChart表示
+                        int solarChart_y = Properties.Settings.Default.solarPowerNum;  // ソーラー電力
+                        if (double.TryParse(serialDataAry[mainChart_x], out double xSolar) && double.TryParse(serialDataAry[solarChart_y], out double ySolar))
+                        {
+                            solarChart.Series[global_solarChartLegend].Points.AddXY(xSolar, ySolar);
+                        }
                     }
 
 

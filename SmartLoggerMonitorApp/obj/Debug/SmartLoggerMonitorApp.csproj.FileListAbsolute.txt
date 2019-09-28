@@ -10,3 +10,15 @@ c:\users\meite\source\repos\SmartLoggerMonitorApp\SmartLoggerMonitorApp\obj\Debu
 c:\users\meite\source\repos\SmartLoggerMonitorApp\SmartLoggerMonitorApp\obj\Debug\SmartLoggerMonitorApp.Form_Main.resources
 C:\Users\meite\source\repos\SmartLoggerMonitorApp\SmartLoggerMonitorApp\obj\Debug\SmartLoggerMonitorApp.csprojAssemblyReference.cache
 C:\Users\meite\source\repos\SmartLoggerMonitorApp\SmartLoggerMonitorApp\obj\Debug\SmartLoggerMonitorApp.Form_ChartSettings.resources
+C:\Users\meite\GitHub_clone\MainLoggerMonitor\SmartLoggerMonitorApp\bin\Debug\SmartLoggerMonitorApp.exe.config
+C:\Users\meite\GitHub_clone\MainLoggerMonitor\SmartLoggerMonitorApp\bin\Debug\SmartLoggerMonitorApp.exe
+C:\Users\meite\GitHub_clone\MainLoggerMonitor\SmartLoggerMonitorApp\bin\Debug\SmartLoggerMonitorApp.pdb
+C:\Users\meite\GitHub_clone\MainLoggerMonitor\SmartLoggerMonitorApp\obj\Debug\SmartLoggerMonitorApp.csprojAssemblyReference.cache
+C:\Users\meite\GitHub_clone\MainLoggerMonitor\SmartLoggerMonitorApp\obj\Debug\SmartLoggerMonitorApp.Form_ChartSettings.resources
+C:\Users\meite\GitHub_clone\MainLoggerMonitor\SmartLoggerMonitorApp\obj\Debug\SmartLoggerMonitorApp.Form_Main.resources
+C:\Users\meite\GitHub_clone\MainLoggerMonitor\SmartLoggerMonitorApp\obj\Debug\SmartLoggerMonitorApp.Properties.Resources.resources
+C:\Users\meite\GitHub_clone\MainLoggerMonitor\SmartLoggerMonitorApp\obj\Debug\SmartLoggerMonitorApp.Form_SerialSettings.resources
+C:\Users\meite\GitHub_clone\MainLoggerMonitor\SmartLoggerMonitorApp\obj\Debug\SmartLoggerMonitorApp.csproj.GenerateResource.cache
+C:\Users\meite\GitHub_clone\MainLoggerMonitor\SmartLoggerMonitorApp\obj\Debug\SmartLoggerMonitorApp.csproj.CoreCompileInputs.cache
+C:\Users\meite\GitHub_clone\MainLoggerMonitor\SmartLoggerMonitorApp\obj\Debug\SmartLoggerMonitorApp.exe
+C:\Users\meite\GitHub_clone\MainLoggerMonitor\SmartLoggerMonitorApp\obj\Debug\SmartLoggerMonitorApp.pdb

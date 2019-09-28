@@ -107,28 +107,39 @@ namespace SmartLoggerMonitorApp
                 return;
             }
 
+            string serialDataStr = null;
             string[] serialDataAry = null;   // シリアル通信データ格納用
-
+            
             try
             {
                 // 1行受信後、カンマごとに分割し配列に格納
-                serialDataAry = serialPort1.ReadLine().Split(',');
+                serialDataStr = serialPort1.ReadLine();
             }
             catch (Exception)
             {
-                MessageBox.Show("シリアル通信エラー", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                SerialPortClose();
+                // MessageBox.Show("シリアル通信エラー", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // SerialPortClose();
                 return;
+            }
 
+            try
+            {
+                serialDataAry = serialDataStr.Split(',');
+            }
+            catch (Exception)
+            {
+                // 分割エラー
+                return;
             }
 
             // 配列要素数と送信データの要素数が一致した場合
-            if(serialDataAry.Length == Properties.Settings.Default.serialDataNum) {
+            if (serialDataAry.Length == Properties.Settings.Default.serialDataNum)
+            {
                 BeginInvoke((MethodInvoker)delegate
-                {   
+                {
                     // dataGridViewMainに1行を上からそのまま挿入
                     dataGridViewMain.Rows.Insert(0, serialDataAry);
-                    
+
                     /*
                     // dataGridViewSolarLeftにMPPT発電量を表示
                     double solarLeftSum = 0;
@@ -219,7 +230,7 @@ namespace SmartLoggerMonitorApp
 
                     // 加速抵抗補正プログラム
                     // 文字列がdouble型に変換可能な場合
-                    if(double.TryParse(serialDataAry[motorPowerNum], out  double motorPower) && double.TryParse(serialDataAry[speedNum], out double speed))
+                    if (double.TryParse(serialDataAry[motorPowerNum], out double motorPower) && double.TryParse(serialDataAry[speedNum], out double speed))
                     {
                         double accel_ms = (speed - global_preSpeed) / 3.6;  // km/h/s→m/s^2
 
@@ -231,7 +242,7 @@ namespace SmartLoggerMonitorApp
                         double eff = Properties.Settings.Default.motorEff / 100;  // 効率
                         double accelPower = weight * accel_ms * speed_ms / eff;   // バッテリーサイドの加速抵抗を計算
 
-                        if(accelPower > 0)
+                        if (accelPower > 0)
                         {
                             int arySortNum = (int)Math.Round(speed);  // 速度を整数に丸める（直接配列要素数になるようにしている）
                             if (arySortNum >= 0)
@@ -240,19 +251,21 @@ namespace SmartLoggerMonitorApp
                                 global_sumMotorPowerData[arySortNum] += (motorPower - accelPower);  // 加速抵抗を差し引きモータ電力を合計
 
                                 // 加速抵抗補正された平均モータ電力（合計/平均回数）
-                                global_averageMotorPowerData[arySortNum] = global_sumMotorPowerData[arySortNum] / global_averageCount[arySortNum]; 
+                                global_averageMotorPowerData[arySortNum] = global_sumMotorPowerData[arySortNum] / global_averageCount[arySortNum];
                             }
                         }
                     }
 
                     // resChart
                     resChart.Series[global_resChartLegend].Points.Clear();
-                    for(int i = 0; i < SORT_SPEED_NUM; i++)
+                    for (int i = 0; i < SORT_SPEED_NUM; i++)
                     {
                         resChart.Series[global_resChartLegend].Points.AddXY(i, global_averageMotorPowerData[i]);
                     }
+
                 });
             }
+
         }
 
 

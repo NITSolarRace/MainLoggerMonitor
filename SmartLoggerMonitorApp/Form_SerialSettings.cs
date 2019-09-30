@@ -41,7 +41,7 @@ namespace SmartLoggerMonitorApp
             }
 
             // その他コンボボックスの初期値
-            ComboBox_speed.SelectedIndex = 1;  // 57600bpsを初期値に
+            ComboBox_speed.SelectedIndex = 1;
             ComboBox_enter.SelectedIndex = 0;
             ComboBox_encode.SelectedIndex = 0;
             ComboBox_dataBit.SelectedIndex = 0;

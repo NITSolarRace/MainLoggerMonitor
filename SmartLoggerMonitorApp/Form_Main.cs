@@ -13,7 +13,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 namespace SmartLoggerMonitorApp
 {
     public partial class Form_Main : Form
-    {   
+    {
         // シリアル通信設定フォーム
         private Form_SerialSettings form_SerialSettings = new Form_SerialSettings();
         // グラフ設定フォーム
@@ -28,6 +28,8 @@ namespace SmartLoggerMonitorApp
         private string global_subChartLegend_2 = "速度";
         private string global_resChartLegend = "モータ電力";
         private string global_resChartLegendTheory = "理論値";
+        private string[,] global_serialDataAryEne = new string[2, 8];
+        string[] serialDataAry = null;   // シリアル通信データ格納用
 
         private const int SORT_SPEED_NUM = 121;  // 0-120km/hまで
         private int[] global_averageCount = new int[SORT_SPEED_NUM];
@@ -35,6 +37,10 @@ namespace SmartLoggerMonitorApp
         private double[] global_averageMotorPowerData = new double[SORT_SPEED_NUM];
         private double global_preSpeed = 0;  // 前の速度
         private int global_serialCount = 0;
+        private bool global_timerFlag = false;
+        private double[] global_timeSecondTrans = new double[3];//時間のsecond計算
+        private double[] global_motDouble = new double[3];//モータ消費電力の積算
+        private double[] global_solDouble = new double[3];//パネル発電量の積算
 
 
         public Form_Main()
@@ -100,7 +106,7 @@ namespace SmartLoggerMonitorApp
 
         // シリアル通信受信イベントハンドラ（改行コードまで受信されたごとに実行）
         private void serialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {   
+        {
             // シリアルポートが開いていない場合、終了
             if (!serialPort1.IsOpen)
             {
@@ -108,8 +114,7 @@ namespace SmartLoggerMonitorApp
             }
 
             string serialDataStr = null;
-            string[] serialDataAry = null;   // シリアル通信データ格納用
-            
+
             try
             {
                 // 1行受信後、カンマごとに分割し配列に格納
@@ -121,6 +126,7 @@ namespace SmartLoggerMonitorApp
                 // SerialPortClose();
                 return;
             }
+
 
             try
             {
@@ -139,6 +145,7 @@ namespace SmartLoggerMonitorApp
                 {
                     // dataGridViewMainに1行を上からそのまま挿入
                     dataGridViewMain.Rows.Insert(0, serialDataAry);
+
 
                     /*
                     // dataGridViewSolarLeftにMPPT発電量を表示
@@ -199,13 +206,13 @@ namespace SmartLoggerMonitorApp
                                 mainChart.Series[global_mainChartLegend[i]].Points.AddXY(x2, y2);
                             }
                         }
+                    }
 
-                        // solarChart表示
-                        int solarChart_y = Properties.Settings.Default.solarPowerNum;  // ソーラー電力
-                        if (double.TryParse(serialDataAry[mainChart_x], out double xSolar) && double.TryParse(serialDataAry[solarChart_y], out double ySolar))
-                        {
-                            solarChart.Series[global_solarChartLegend].Points.AddXY(xSolar, ySolar);
-                        }
+                    // solarChart表示
+                    int solarChart_y = Properties.Settings.Default.solarPowerNum;  // ソーラー電力
+                    if (double.TryParse(serialDataAry[mainChart_x], out double xSolar) && double.TryParse(serialDataAry[solarChart_y], out double ySolar))
+                    {
+                        solarChart.Series[global_solarChartLegend].Points.AddXY(xSolar, ySolar);
                     }
 
 
@@ -263,9 +270,81 @@ namespace SmartLoggerMonitorApp
                         resChart.Series[global_resChartLegend].Points.AddXY(i, global_averageMotorPowerData[i]);
                     }
 
+                    //指定した時間毎に積算を処理
+                    if (global_timerFlag == true)
+                    {
+
+                        //積分=10分ごとの差分値を出すため最新だったものは過去のデータとして格納
+                        int x;
+                        for (x = 0; x <= 6; x++)
+                        {
+                            global_serialDataAryEne[0, x] = global_serialDataAryEne[1, x];
+                        }
+                        global_timeSecondTrans[0] = global_timeSecondTrans[1];
+                        global_motDouble[0] = global_motDouble[1];
+                        global_solDouble[0] = global_solDouble[1];
+
+                        //現在時刻を取得
+                        DateTime dt = DateTime.Now;
+                        string nowTime = dt.ToString("HH:mm:ss");
+                        string hour = dt.ToString("HH");
+                        string minute = dt.ToString("mm");
+                        string second = dt.ToString("ss");
+
+                        //最新の情報を格納
+                        global_serialDataAryEne[1, 0] = nowTime;
+                        global_serialDataAryEne[1, 6] = serialDataAry[Properties.Settings.Default.solarPowerWhNum];
+                        global_serialDataAryEne[1, 7] = serialDataAry[Properties.Settings.Default.motorPowerWhNum];
+
+                        //差分を計算するために文字列を数値に変換
+                        if (double.TryParse(serialDataAry[Properties.Settings.Default.solarPowerWhNum], out double a))
+                        {
+                            global_solDouble[1] = double.Parse(serialDataAry[Properties.Settings.Default.solarPowerWhNum]);
+                        }
+                        if (double.TryParse(serialDataAry[Properties.Settings.Default.motorPowerWhNum], out double b))
+                        {
+                            global_motDouble[1] = double.Parse(serialDataAry[Properties.Settings.Default.motorPowerWhNum]);
+                        }
+
+                        if (double.TryParse(hour, out double c) && double.TryParse(minute, out double d) && double.TryParse(second, out double f))
+                        {
+                            double hourDouble = double.Parse(hour);
+                            double minuteDouble = double.Parse(minute);
+                            double secondDouble = double.Parse(second);
+                            global_timeSecondTrans[1] = (hourDouble * 3600) + (minuteDouble * 60) + secondDouble;
+                        }
+
+                        global_timeSecondTrans[2] = global_timeSecondTrans[1] - global_timeSecondTrans[0];
+                        global_solDouble[2] = global_solDouble[1] - global_solDouble[0];
+                        global_motDouble[2] = global_motDouble[1] - global_motDouble[0];
+
+
+
+                        global_serialDataAryEne[1, 1] = global_timeSecondTrans[2].ToString();
+                        global_serialDataAryEne[1, 2] = global_solDouble[2].ToString();
+                        global_serialDataAryEne[1, 3] = global_motDouble[2].ToString();
+                        global_serialDataAryEne[1, 4] = (global_solDouble[2] * 600 / global_timeSecondTrans[2]).ToString();
+                        global_serialDataAryEne[1, 5] = (global_motDouble[2] * 600 / global_timeSecondTrans[2]).ToString();
+
+                        int y;
+                        string[] serialDataAryEne = new string[6];
+                        for (y = 0; y <= 5; y++)
+                        {
+
+                            serialDataAryEne[y] = global_serialDataAryEne[1, y];
+                        }
+
+
+                        //得られた計算結果を表示する
+                        dataGridView1.Rows.Insert(0, serialDataAryEne);
+
+                        global_timerFlag = false;
+
+                    }
+
+
                 });
             }
-
         }
 
 
@@ -358,16 +437,16 @@ namespace SmartLoggerMonitorApp
 
             string[] dataAryColName = Properties.Settings.Default.dataAryColName.Split(',');
             string[] dataAryColShow = Properties.Settings.Default.dataAryColShow.Split(',');
-            
-            for(int i = 0; i < Properties.Settings.Default.serialDataNum; i++)
+
+            for (int i = 0; i < Properties.Settings.Default.serialDataNum; i++)
             {
                 dataGridViewMain.Columns[i].HeaderText = dataAryColName[i];
                 dataGridViewMain.Columns[i].Width = 80;
-                if(dataAryColShow[i] == "False")
+                if (dataAryColShow[i] == "False")
                 {
                     dataGridViewMain.Columns[i].Visible = false;
                 }
-                else if(dataAryColShow[i] == "True")
+                else if (dataAryColShow[i] == "True")
                 {
                     dataGridViewMain.Columns[i].Visible = true;
                 }
@@ -490,7 +569,7 @@ namespace SmartLoggerMonitorApp
             mainChartAry_y.CopyTo(mainChartAryConcat, 0);
             mainChartAry_y2.CopyTo(mainChartAryConcat, mainChartAry_y.Length);
             string[] mainChartLegendAry = new string[mainChartLegendNum];
-            for(int i = 0; i < mainChartLegendNum; i++)
+            for (int i = 0; i < mainChartLegendNum; i++)
             {
                 mainChartLegendAry[i] = dataAryColName[mainChartAryConcat[i]];
 
@@ -502,18 +581,18 @@ namespace SmartLoggerMonitorApp
                 {
                     MessageBox.Show(ex.Message, "グラフ表示エラー", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
-                
+
                 mainChart.Series[mainChartLegendAry[i]].ChartType = SeriesChartType.Spline;
-                for(int j = 0; j < mainChartAry_y.Length; j++)
+                for (int j = 0; j < mainChartAry_y.Length; j++)
                 {
-                    if(mainChartLegendAry[i] == dataAryColName[mainChartAry_y[j]])
+                    if (mainChartLegendAry[i] == dataAryColName[mainChartAry_y[j]])
                     {
                         mainChart.Series[mainChartLegendAry[i]].YAxisType = AxisType.Primary;
                     }
                 }
-                for(int j = 0; j < mainChartAry_y2.Length; j++)
+                for (int j = 0; j < mainChartAry_y2.Length; j++)
                 {
-                    if(mainChartLegendAry[i] == dataAryColName[mainChartAry_y2[j]])
+                    if (mainChartLegendAry[i] == dataAryColName[mainChartAry_y2[j]])
                     {
                         mainChart.Series[mainChartLegendAry[i]].YAxisType = AxisType.Secondary;
                     }
@@ -549,7 +628,7 @@ namespace SmartLoggerMonitorApp
             solarChart.ChartAreas[global_chartAreaName].AxisY.Interval = 200;
             solarChart.ChartAreas[global_chartAreaName].AxisX.MajorGrid.LineColor = Color.Silver;
             solarChart.ChartAreas[global_chartAreaName].AxisY.MajorGrid.LineColor = Color.Silver;
-            
+
 
             // subChart設定（速度、モータ電力　詳細グラフ）
             subChart.Series.Add(global_subChartLegend);
@@ -588,10 +667,10 @@ namespace SmartLoggerMonitorApp
             resChart.ChartAreas[global_chartAreaName].AxisX.MajorGrid.LineColor = Color.Silver;
             resChart.ChartAreas[global_chartAreaName].AxisY.MajorGrid.LineColor = Color.Silver;
 
-            double[] theoryVal_x = {0,10,20,30,40,50,60,70,80,90,100,110,120 };
-            double[] theoryVal_y = {0,34.9,78.7,136.2,212.0,310.5,436.6,594.6,789.3,1025.2,1307.0,1639.3,2026.6 };
+            double[] theoryVal_x = { 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120 };
+            double[] theoryVal_y = { 0, 34.9, 78.7, 136.2, 212.0, 310.5, 436.6, 594.6, 789.3, 1025.2, 1307.0, 1639.3, 2026.6 };
 
-            for(int i = 0; i < theoryVal_x.Length; i++)
+            for (int i = 0; i < theoryVal_x.Length; i++)
             {
                 resChart.Series[global_resChartLegendTheory].Points.AddXY(theoryVal_x[i], theoryVal_y[i]);
             }
@@ -603,13 +682,13 @@ namespace SmartLoggerMonitorApp
         private int[] StringAryToIntAry(string[] strAry)
         {
             int[] intAry = new int[strAry.Length];
-            for(int i = 0; i < strAry.Length; i++)
+            for (int i = 0; i < strAry.Length; i++)
             {
                 intAry[i] = int.Parse(strAry[i]);
             }
 
             // 要素が一つの場合バグる例外対策
-            if(intAry.Length == 2 && intAry[0] == 0)
+            if (intAry.Length == 2 && intAry[0] == 0)
             {
                 int temp = intAry[1];
                 intAry = new int[1];
@@ -658,7 +737,7 @@ namespace SmartLoggerMonitorApp
                     {
                         sw.WriteLine("{0}", Properties.Settings.Default.dataAryColName);
 
-                        for (int i = 0; i < tableRowsCount - 1; i++)  
+                        for (int i = 0; i < tableRowsCount - 1; i++)
                         {
                             for (int j = 0; j < tableColsCount; j++)
                             {
@@ -705,6 +784,43 @@ namespace SmartLoggerMonitorApp
             // シリアルポートを閉じる
             SerialPortClose();
             this.Close();
+        }
+
+        //タイマーの設定
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            DateTime dtkeeper = DateTime.Now;
+            string nowTimekeeper = dtkeeper.ToString("mmss");
+            double nowDouble = double.Parse(nowTimekeeper);
+            if (nowDouble % 1000 == 959)
+            {
+                global_timerFlag = true;
+            }
+
+        }
+
+        //動作を軽くするためのリセットボタン
+        private void dataResetToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            dataGridViewMain.Rows.Clear();
+            serialDataAry = null;
+            dataGridView1.Rows.Clear();
+            solarChart.Series[global_solarChartLegend].Points.Clear();
+            subChart.Series[global_subChartLegend].Points.Clear();
+            subChart.Series[global_subChartLegend_2].Points.Clear();
+            for (int i = 0; i < global_mainChartAry_y.Length; i++)
+            {
+                mainChart.Series[global_mainChartLegend[i]].Points.Clear();
+            }
+            for (int i = global_mainChartAry_y.Length; i < global_mainChartLegend.Length; i++)
+            {
+                mainChart.Series[global_mainChartLegend[i]].Points.Clear();
+            }
+        }
+
+        private void dataGridViewMain_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
